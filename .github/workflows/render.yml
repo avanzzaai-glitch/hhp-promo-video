@@ -9,7 +9,7 @@ jobs:
   render:
     name: Render MP4
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
 
     steps:
       - name: 📥 Checkout
@@ -19,17 +19,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "npm"
 
       - name: 📦 Install dependencies
         run: npm install
 
-      - name: 🎨 Install Chrome & dependencies
+      - name: 🎨 Install system dependencies for Chrome
         run: |
-          sudo apt-get update
+          sudo apt-get update -qq
           sudo apt-get install -y \
-            chromium-browser \
-            libgbm-dev \
             libnss3 \
             libatk1.0-0 \
             libatk-bridge2.0-0 \
@@ -40,9 +37,8 @@ jobs:
             libxfixes3 \
             libxrandr2 \
             libgbm1 \
-            libasound2 \
-            fonts-liberation \
-            xvfb
+            libasound2t64 \
+            fonts-liberation
 
       - name: 📁 Create output folder
         run: mkdir -p out
@@ -51,7 +47,7 @@ jobs:
         run: |
           npx remotion render HappyPetsPromo out/happy-healthy-pets-promo.mp4 \
             --gl=swiftshader \
-            --log=verbose
+            --concurrency=2
 
       - name: 📤 Upload MP4 artifact
         uses: actions/upload-artifact@v4
