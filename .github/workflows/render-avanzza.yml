@@ -1,4 +1,4 @@
-name: 🎬 Render Avanzza Promo Video
+name: 🎬 Render Avanzza Promo Videos
 
 on:
   push:
@@ -7,9 +7,12 @@ on:
 
 jobs:
   render:
-    name: Render avanzza-promo
+    name: Render ${{ matrix.video }}
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    strategy:
+      matrix:
+        video: [avanzza-promo, avanzza-promo2]
 
     steps:
       - name: 📥 Checkout
@@ -34,15 +37,15 @@ jobs:
       - name: 📁 Create output folder
         run: mkdir -p out
 
-      - name: 🎬 Render avanzza-promo
+      - name: 🎬 Render ${{ matrix.video }}
         run: |
-          npx remotion render avanzza-promo out/avanzza-promo.mp4 \
+          npx remotion render ${{ matrix.video }} out/${{ matrix.video }}.mp4 \
             --gl=swiftshader \
             --concurrency=2
 
       - name: 📤 Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: avanzza-promo
-          path: out/avanzza-promo.mp4
+          name: ${{ matrix.video }}
+          path: out/${{ matrix.video }}.mp4
           retention-days: 30
