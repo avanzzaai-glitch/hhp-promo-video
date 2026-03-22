@@ -1,4 +1,4 @@
-name: 🎬 Render Happy & Healthy Pets Video
+name: 🎬 Render Product Videos Series
 
 on:
   push:
@@ -7,9 +7,13 @@ on:
 
 jobs:
   render:
-    name: Render MP4
+    name: Render ${{ matrix.product }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
+    strategy:
+      matrix:
+        product: [digest, urinary, mobility, artro, vision, alergy, gymgo, bronqui, senior, cartilag, derma, lifequality, calm]
+      fail-fast: false
 
     steps:
       - name: 📥 Checkout
@@ -27,31 +31,22 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y \
-            libnss3 \
-            libatk1.0-0 \
-            libatk-bridge2.0-0 \
-            libcups2 \
-            libxkbcommon0 \
-            libxcomposite1 \
-            libxdamage1 \
-            libxfixes3 \
-            libxrandr2 \
-            libgbm1 \
-            libasound2t64 \
-            fonts-liberation
+            libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 \
+            libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 \
+            libxrandr2 libgbm1 libasound2t64 fonts-liberation
 
       - name: 📁 Create output folder
         run: mkdir -p out
 
-      - name: 🎬 Render video
+      - name: 🎬 Render video — ${{ matrix.product }}
         run: |
-          npx remotion render HappyPetsPromo out/happy-healthy-pets-promo.mp4 \
+          npx remotion render product-${{ matrix.product }} out/${{ matrix.product }}.mp4 \
             --gl=swiftshader \
             --concurrency=2
 
-      - name: 📤 Upload MP4 artifact
+      - name: 📤 Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: happy-healthy-pets-promo
-          path: out/happy-healthy-pets-promo.mp4
+          name: video-${{ matrix.product }}
+          path: out/${{ matrix.product }}.mp4
           retention-days: 30

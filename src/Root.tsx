@@ -1,18 +1,22 @@
-import { Composition } from "remotion";
-import { HappyPetsPromo } from "./HappyPetsPromo";
+import { Composition } from 'remotion';
+import { ProductVideo } from './ProductVideo';
+import { PRODUCTS } from './products_data';
 
-// 30fps · ~25 segundos = 750 frames
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      <Composition
-        id="HappyPetsPromo"
-        component={HappyPetsPromo}
-        durationInFrames={750}
-        fps={30}
-        width={1080}
-        height={1920}
-      />
+      {PRODUCTS.map((product) => (
+        <Composition
+          key={product.id}
+          id={`product-${product.id}`}
+          component={ProductVideo}
+          durationInFrames={420} // 14 segundos a 30fps
+          fps={30}
+          width={1080}
+          height={1920}
+          defaultProps={{ product }}
+        />
+      ))}
     </>
   );
 };
