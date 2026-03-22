@@ -12,7 +12,13 @@ jobs:
     timeout-minutes: 25
     strategy:
       matrix:
-        video: [avanzza-promo, avanzza-promo2]
+        include:
+          - video: avanzza-promo
+            fps: 30
+          - video: avanzza-promo2
+            fps: 30
+          - video: avanzza-promo3
+            fps: 24
 
     steps:
       - name: 📥 Checkout
